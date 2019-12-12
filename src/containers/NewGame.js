@@ -3,7 +3,7 @@ import { API } from "aws-amplify";
 import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import { useFormFields } from "../libs/hooksLib";
-import "./Login.css";
+import "./NewGame.css";
 
 export default function NewGame(props) {
   const [isLoading, setIsLoading] = useState(false);
@@ -12,7 +12,7 @@ export default function NewGame(props) {
   });
 
   function validateForm() {
-    return Number.isInteger(+fields.time);
+    return fields.time.length && Number.isInteger(+fields.time);
   }
 
   async function handleSubmit(event) {
@@ -35,7 +35,7 @@ export default function NewGame(props) {
   }
 
   return (
-    <div className="Login">
+    <div className="NewGame">
       <form onSubmit={handleSubmit}>
         <FormGroup controlId="time" bsSize="large">
           <ControlLabel>Time</ControlLabel>
