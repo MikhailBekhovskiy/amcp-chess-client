@@ -55,7 +55,7 @@ export default function Home(props) {
     return (
       <div className="lander">
         <h1>Scratch</h1>
-        <p>A simple game taking app</p>
+        <p>A sample for the future of online gaming!</p>
       </div>
     );
   }

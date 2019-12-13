@@ -9,6 +9,7 @@ import Routes from "./Routes";
 function App(props) {
   const [isAuthenticating, setIsAuthenticating] = useState(true);
   const [isAuthenticated, userHasAuthenticated] = useState(false);
+  const [inGame, userHasJoinedGame] = useState(false);
 
   useEffect(() => {
     onLoad();
@@ -32,6 +33,7 @@ function App(props) {
     await Auth.signOut();
   
     userHasAuthenticated(false);
+    userHasJoinedGame(false);
 
     props.history.push("/login");
   }
@@ -49,25 +51,29 @@ function App(props) {
         <Navbar.Collapse>
           <Nav pullRight>
             {isAuthenticated
+            ? !inGame 
               ? <>
                   <LinkContainer to="/games/new">
                     <NavItem>Create a game</NavItem>
                   </LinkContainer>
                   <NavItem onClick={handleLogout}>Logout</NavItem>
                 </>
-              : <>
-                  <LinkContainer to="/signup">
-                    <NavItem>Signup</NavItem>
-                  </LinkContainer>
-                  <LinkContainer to="/login">
-                    <NavItem>Login</NavItem>
-                  </LinkContainer>
-                </>
+              : <LinkContainer to="/">
+                  <NavItem>Leave</NavItem>
+                </LinkContainer>
+            : <>
+                <LinkContainer to="/signup">
+                  <NavItem>Signup</NavItem>
+                </LinkContainer>
+                <LinkContainer to="/login">
+                  <NavItem>Login</NavItem>
+                </LinkContainer>
+              </>
             }
           </Nav>
         </Navbar.Collapse>
       </Navbar>
-      <Routes appProps={{ isAuthenticated, userHasAuthenticated }} />
+      <Routes appProps={{ isAuthenticated, userHasAuthenticated, inGame, userHasJoinedGame }} />
     </div>
   );
 }
