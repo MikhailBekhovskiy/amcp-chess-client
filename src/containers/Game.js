@@ -29,7 +29,7 @@ export default function Game(props) {
   let socket;
 
   function connectToWebSocket() {      
-    let webSocketConnection = config.apiGateway.URL;
+    let webSocketConnection = config.apiGateway.WS;
     console.log(webSocketConnection);
     socket = new WebSocket(webSocketConnection);
     socket.onmessage = function(event) {
