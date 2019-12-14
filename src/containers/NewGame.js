@@ -21,7 +21,8 @@ export default function NewGame(props) {
     setIsLoading(true);
 
     try {
-      await createGame(fields);
+      let game = await createGame(fields);
+      props.history.push("/games/" + game.gameId);
     } catch (e) {
       alert(e.message);
       setIsLoading(false);
