@@ -13,38 +13,51 @@ export default function Game(props) {
   const [text, setText] = useState("");
   let [messages, setMessages] = useState([]);
   const socket = useRef(null);
-
+  const [connectionId, setConnectionId] = useState('');
+  
   useEffect(() => {
-    function connectToWebSocket() {      
-      let webSocketConnection = config.apiGateway.WS;
-      socket.current = new WebSocket(webSocketConnection);
+    function connectToWebSocket() {
+      socket.current = new WebSocket(config.apiGateway.WS);
       socket.current.onmessage = (event) => {
-        setMessages(messages.concat(event.data));
+        let data = JSON.parse(event.data);
+        console.log("New message:", event);
+        switch (data.action) {
+        case "getConnectionId": 
+          setConnectionId(data.connectionId);
+          break;
+        case "sendMessage":
+          setMessages(messages.concat(data.message));
+          break;
+        default:
+          setMessages(messages.concat("Unknown socket message:", JSON.stringify(data)));
+        }
       };
       socket.current.onerror = (event) => {
         console.error("WebSocket error observed:", event);
-      };
-      sendGameId();
+      };  
     }
-    async function sendGameId() {
-      if (!socket.current.readyState) {
-        setIsLoading(true);
-        setTimeout(() => {
-          sendGameId();
-        }, 100);
-      }
-      else {
-        socket.current.send(JSON.stringify({
-          "action": "send-gameid",
-          "gameId": `${props.match.params.id}`,
-        }));
-        setIsLoading(false);
-      }
+    function sendGameId() {
+      sendToWebsocket({action: "send-gameid", gameId: `${props.match.params.id}`});
+    }
+
+    function getConnectionId() {
+      sendToWebsocket({action: "getConnectionId"})
+    }
+
+    function sendIdentity() {
+      await API.post("chess", `/games/${props.match.params.id}`, {
+        body: {
+          connectionId: connectionId,
+        },
+      });
     }
 
     async function onLoad() {
       try {
         connectToWebSocket();
+        sendGameId();
+        getConnectionId();
+        sendIdentity();
       } catch (e) {
         alert(e);
       }
@@ -68,29 +81,38 @@ export default function Game(props) {
     )
   }
 
-  async function sendMessage() {
+  async function sendToWebsocket(body) {
     if (!socket.current.readyState) {
       setIsLoading(true);
       setTimeout(() => {
-        sendMessage();
+        sendToWebsocket();
       }, 100);
     }
     else {
-      socket.current.send(JSON.stringify({
-        "action": "send-message",
-        "message": text,
-        "gameId": `${props.match.params.id}`,
-      }));
+      socket.current.send(JSON.stringify(body));
       setIsLoading(false);
     }
   }
 
-  function disconnect() {
+  function sendMessage() {
+    let body = {
+      "action": "send-message",
+      "message": text,
+    };
+    sendToWebsocket(body);
+  }
+
+  async function disconnect() {
+    await API.put("chess", `/games/${props.match.params.id}`, {
+      body: {
+        connectionId: connectionId,
+      },
+    }); 
     socket.current.close();
   }
 
   async function leaveGame() {
-    disconnect();
+    await disconnect();
     console.log("gameId:", `${props.match.params.id}`);
     props.userHasJoinedGame(false);
     await API.del("chess", `/games/${props.match.params.id}`);
