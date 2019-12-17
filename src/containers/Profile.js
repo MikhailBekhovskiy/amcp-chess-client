@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { PageHeader, ListGroup, ListGroupItem } from "react-bootstrap";
+import { PageHeader, ListGroup, ListGroupItem, Button } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { API } from "aws-amplify";
+import Modal from 'react-modal';
 import "./Home.css";
 
 export default function Home(props) {
@@ -33,13 +34,32 @@ export default function Home(props) {
   }
 
   function renderPartiesList(parties) {
+    
+    function Party(props) {
+      const [show, setShow] = useState(false);
+      const handleClose = () => setShow(false);
+      const handleShow = () => setShow(true);
+      let party = props.party;
+      return (
+      <>
+        <Button onClick={handleShow}>
+          <ListGroupItem  header={party.gameId}>
+          {"Created: " + new Date(party.createdAt).toLocaleString() + '|' +
+          party.user1Id + '|' + party.user2Id + '|' + party.winner}
+        </ListGroupItem>
+        </Button>
+        <Modal show={show} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Notation</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>{party.notation || ''}</Modal.Body>
+        </Modal>
+      </>
+      )
+    }
+
     return [].concat(parties).map((party, i) =>
-    <div key={party.createdAt}>
-      <ListGroupItem  header={party.gameId}>
-        {"Created: " + new Date(party.createdAt).toLocaleString() + '|' +
-        party.user1Id + '|' + party.user2Id + '|' + party.winner}
-      </ListGroupItem>
-      </div>
+      <Party party={party}></Party>
     );
   }
 
