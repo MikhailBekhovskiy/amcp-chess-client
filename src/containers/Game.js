@@ -11,6 +11,8 @@ export default function Game(props) {
   props.userHasJoinedGame(true);
 
   const [text, setText] = useState("");
+  const [move, setMove] = useState("");
+  const [lastMove, setLastMove] = useState("");
   const [messages, setMessages] = useState([]);
   const socket = useRef(null);
 
@@ -24,6 +26,8 @@ export default function Game(props) {
       case "sendMessage":
         setMessages(messages.concat(data.message));
         break;
+      case "move":
+        setLastMove(data.move);
       default:
         setMessages(messages.concat("Unknown socket message:", JSON.stringify(data)));
       }
@@ -101,6 +105,15 @@ export default function Game(props) {
     event.preventDefault();
     sendMessage();
   }
+  function SendMove(event) {
+    event.preventDefault();
+    let body = {
+      action: "makeMove",
+      move: move
+    }
+    sendToWebsocket(body);
+
+  }
 
   return (
     <>
@@ -148,6 +161,26 @@ export default function Game(props) {
         </LoaderButton>
       </form>
       <MessagesContainer messages={messages}/>
+
+      <form onSubmit={SendMove}>
+        <FormGroup controlId="content">
+          <FormControl
+            value={move}
+            componentClass="textarea"
+            onChange={e => setMove(e.target.value)}
+          />
+        </FormGroup>
+        <LoaderButton
+          block
+          type="submit"
+          bsSize="large"
+          bsStyle="primary"
+          isLoading={isLoading}
+          disabled={!validateForm()}
+        >SendMove
+        </LoaderButton>
+      </form>
+      <div>{lastMove}</div>
     </>
   )
 }
