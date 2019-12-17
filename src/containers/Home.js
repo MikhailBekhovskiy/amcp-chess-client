@@ -35,7 +35,7 @@ export default function Home(props) {
     return [{}].concat(games).map((game, i) =>
       i !== 0 ? (
         <LinkContainer key={game.gameId} to={`/games/${game.gameId}`}>
-          <ListGroupItem header={game.playerId1.trim().split("\n")[0]}>
+          <ListGroupItem header={game.gameId.trim().split("\n")[0]}>
             {"Created: " + new Date(game.createdAt).toLocaleString()}
           </ListGroupItem>
         </LinkContainer>
