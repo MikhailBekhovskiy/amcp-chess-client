@@ -109,7 +109,8 @@ export default function Game(props) {
     event.preventDefault();
     let body = {
       action: "makeMove",
-      move: move
+      move: move,
+      gameId: `${props.match.params.id}`
     }
     sendToWebsocket(body);
 
