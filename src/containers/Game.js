@@ -68,12 +68,17 @@ export default function Game(props) {
     sendToWebsocket(body);
   }
 
-  function sendGameId() {
+  async function sendInfo() {
     let body = {
       "action": "send-gameid",
       "gameId": `${props.match.params.id}`,
     };
-    sendToWebsocket(body);
+    await sendToWebsocket(body);
+    await API.post("chess", `/games/${props.match.params.id}`, {
+      body: {
+        gameId: `${props.match.params.id}`,
+      },
+    });
   }
 
   async function disconnect() {
@@ -127,10 +132,10 @@ export default function Game(props) {
           block
           bsSize="large"
           bsStyle="danger"
-          onClick={sendGameId}
+          onClick={sendInfo}
           isLoading={isLoading}
         >
-          Send GameId
+          Send info
         </LoaderButton>
         <LoaderButton
           block
