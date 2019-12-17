@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { API } from "aws-amplify";
 import {
   HelpBlock,
   FormGroup,
@@ -42,6 +43,7 @@ export default function Signup(props) {
         username: fields.email,
         password: fields.password
       });
+      API.post("chess","/signup");
       setIsLoading(false);
       setNewUser(newUser);
     } catch (e) {
