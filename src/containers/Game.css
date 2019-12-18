@@ -3,3 +3,9 @@
     min-height: 200px;
     background-color: aqua;
 }
+
+.Forms div {
+    display: inline;
+    margin: 10px;
+    background-color: aqua;
+}

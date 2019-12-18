@@ -118,70 +118,74 @@ export default function Game(props) {
 
   return (
     <>
-      <div className="Game">
-        <Prompt
-          when={true}
-          message={leaveGame}
-        />
+      <Prompt
+        when={true}
+        message={leaveGame}
+      />
+      <div className="Forms">
+        <div className="Chat">
+          <form onSubmit={handleSubmit}>
+            <FormGroup controlId="content">
+              <FormControl
+                value={text}
+                componentClass="textarea"
+                onChange={e => setText(e.target.value)}
+              />
+            </FormGroup>
+            <LoaderButton
+              block
+              type="submit"
+              bsSize="large"
+              bsStyle="primary"
+              isLoading={isLoading}
+              disabled={!validateForm()}
+            >
+              Send
+            </LoaderButton>
+            <LoaderButton
+              block
+              bsSize="large"
+              bsStyle="danger"
+              onClick={sendInfo}
+              isLoading={isLoading}
+            >
+              Send info
+            </LoaderButton>
+            <LoaderButton
+              block
+              bsSize="large"
+              bsStyle="danger"
+              onClick={connectToWebSocket}
+              isLoading={isLoading}
+            >
+              Connect
+            </LoaderButton>
+          </form>
+          <MessagesContainer messages={messages}/>
+        </div>
+        
+        <div className="Moves">
+          <form onSubmit={SendMove}>
+            <FormGroup controlId="content">
+              <FormControl
+                value={move}
+                componentClass="textarea"
+                onChange={e => setMove(e.target.value)}
+              />
+            </FormGroup>
+            <LoaderButton
+              block
+              type="submit"
+              bsSize="large"
+              bsStyle="primary"
+              isLoading={isLoading}
+              disabled={!validateForm()}
+            >SendMove
+            </LoaderButton>
+          </form>
+          <div>{lastMove}</div>
+        </div>
       </div>
-      <form onSubmit={handleSubmit}>
-        <FormGroup controlId="content">
-          <FormControl
-            value={text}
-            componentClass="textarea"
-            onChange={e => setText(e.target.value)}
-          />
-        </FormGroup>
-        <LoaderButton
-          block
-          type="submit"
-          bsSize="large"
-          bsStyle="primary"
-          isLoading={isLoading}
-          disabled={!validateForm()}
-        >
-          Send
-        </LoaderButton>
-        <LoaderButton
-          block
-          bsSize="large"
-          bsStyle="danger"
-          onClick={sendInfo}
-          isLoading={isLoading}
-        >
-          Send info
-        </LoaderButton>
-        <LoaderButton
-          block
-          bsSize="large"
-          bsStyle="danger"
-          onClick={connectToWebSocket}
-          isLoading={isLoading}
-        >
-          Connect
-        </LoaderButton>
-      </form>
-      <MessagesContainer messages={messages}/>
-
-      <form onSubmit={SendMove}>
-        <FormGroup controlId="content">
-          <FormControl
-            value={move}
-            componentClass="textarea"
-            onChange={e => setMove(e.target.value)}
-          />
-        </FormGroup>
-        <LoaderButton
-          block
-          type="submit"
-          bsSize="large"
-          bsStyle="primary"
-          isLoading={isLoading}
-          disabled={!validateForm()}
-        >SendMove
-        </LoaderButton>
-      </form>
-      <div>{lastMove}</div>
     </>
   )
 }
