@@ -63,7 +63,7 @@ export default function Home(props) {
   function renderGames() {
     return (
       <div className="games">
-        <PageHeader>Your games</PageHeader>
+        <PageHeader>Games</PageHeader>
         <ListGroup>
           {!isLoading && renderGamesList(games)}
         </ListGroup>
