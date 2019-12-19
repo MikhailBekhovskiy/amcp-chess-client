@@ -69,7 +69,7 @@ export default function Game(props) {
 
   function sendMessage() {
     let body = {
-      "action": "send-message",
+      "action": "propagateMessage",
       "message": text,
       "gameId": `${props.match.params.id}`,
     };
