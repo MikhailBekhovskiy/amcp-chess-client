@@ -13,7 +13,7 @@ export default function NewGame(props) {
 
   function validateForm() {
     // return fields.time.length && Number.isInteger(+fields.roomType);
-    return fields.roomType == "hidden" || fields.roomType == "open" || fields.roomType == "";
+    return fields.roomType === "hidden" || fields.roomType === "open" || fields.roomType === "";
   }
 
   async function handleSubmit(event) {
@@ -22,7 +22,8 @@ export default function NewGame(props) {
     setIsLoading(true);
 
     try {
-      let game = await createGame(fields);
+      let body = {roomType: fields.roomType.length > 0 ? fields.roomType : "open"}
+      let game = await createGame(body);
       props.history.push("/games/" + game.gameId);
     } catch (e) {
       alert(e.message);
@@ -44,7 +45,7 @@ export default function NewGame(props) {
           <FormControl
             autoFocus
             type="textarea"
-            value={fields.time}
+            value={fields.roomType}
             onChange={handleFieldChange}
           />
         </FormGroup>
