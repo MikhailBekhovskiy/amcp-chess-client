@@ -37,8 +37,12 @@ export default function Game(props) {
     };  
   }
 
-  function validateForm() {
+  function validateMessageForm() {
     return text.length > 0;
+  }
+
+  function validateMoveForm() {
+    return move.length > 0;
   }
 
   function MessagesContainer(props) {
@@ -54,7 +58,7 @@ export default function Game(props) {
     if (!socket.current.readyState) {
       setIsLoading(true);
       setTimeout(() => {
-        sendToWebsocket();
+        sendToWebsocket(body);
       }, 100);
     }
     else {
@@ -91,13 +95,15 @@ export default function Game(props) {
         gameId: `${props.match.params.id}`,
       },
     });
+    if (socket.current) {
+      socket.current.close();
+    }
+
   }
 
   async function leaveGame() {
     await disconnect();
-    console.log("gameId:", `${props.match.params.id}`);
     props.userHasJoinedGame(false);
-    await API.del("chess", `/games/${props.match.params.id}`);
     return true;
   }
 
@@ -138,7 +144,7 @@ export default function Game(props) {
               bsSize="large"
               bsStyle="primary"
               isLoading={isLoading}
-              disabled={!validateForm()}
+              disabled={!validateMessageForm()}
             >
               Send
             </LoaderButton>
@@ -179,7 +185,7 @@ export default function Game(props) {
               bsSize="large"
               bsStyle="primary"
               isLoading={isLoading}
-              disabled={!validateForm()}
+              disabled={!validateMoveForm()}
             >SendMove
             </LoaderButton>
           </form>
