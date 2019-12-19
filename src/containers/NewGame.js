@@ -8,11 +8,12 @@ import "./NewGame.css";
 export default function NewGame(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [fields, handleFieldChange] = useFormFields({
-    time: ""
+    roomType: ""
   });
 
   function validateForm() {
-    return fields.time.length && Number.isInteger(+fields.time);
+    // return fields.time.length && Number.isInteger(+fields.roomType);
+    return fields.roomType == "hidden" || fields.roomType == "open" || fields.roomType == "";
   }
 
   async function handleSubmit(event) {
@@ -38,8 +39,8 @@ export default function NewGame(props) {
   return (
     <div className="NewGame">
       <form onSubmit={handleSubmit}>
-        <FormGroup controlId="time" bsSize="large">
-          <ControlLabel>Time</ControlLabel>
+        <FormGroup controlId="roomType" bsSize="large">
+          <ControlLabel>Open or hidden</ControlLabel>
           <FormControl
             autoFocus
             type="textarea"
