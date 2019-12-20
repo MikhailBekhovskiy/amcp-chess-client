@@ -8,9 +8,9 @@ import LoaderButton from "../components/LoaderButton";
 
 function MessagesContainer(props) {
   return (
-    <div className="Messages container">
+    <div className="MessagesContainer">
       {props.messages.map((message, i) =>
-        <div className="message" key={("message-"+i)}>{message}</div>)}
+        <div className="ChatMessage" key={("message-"+i)}>{message}</div>)}
     </div>
   )
 }
@@ -19,6 +19,7 @@ class Game extends React.Component {
   constructor(props) {
     props.userHasJoinedGame(true);
     super(props);
+
     this.state = {
       isLoading: false,
       text: "",
@@ -39,6 +40,11 @@ class Game extends React.Component {
     this.leaveGame = this.leaveGame.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.sendMove = this.sendMove.bind(this);
+  }
+
+  componentDidMount() {
+    this.connectToWebSocket();
+    this.sendInfo();
   }
 
   connectToWebSocket() {
@@ -103,16 +109,25 @@ class Game extends React.Component {
   }
 
   async sendInfo() {
-    let body = {
-      "action": "send-gameid",
-      "gameId": `${this.props.match.params.id}`,
-    };
-    await this.sendToWebsocket(body);
-    await API.post("chess", `/games/${this.props.match.params.id}`, {
-      body: {
-        gameId: `${this.props.match.params.id}`,
-      },
-    });
+    if (!this.state.socket) {
+      this.setState({ isLoading: true });
+      setTimeout(() => {
+        this.sendInfo();
+      }, 100);
+    }
+    else {
+      let body = {
+        "action": "send-gameid",
+        "gameId": `${this.props.match.params.id}`,
+      };
+      await this.sendToWebsocket(body);
+      await API.post("chess", `/games/${this.props.match.params.id}`, {
+        body: {
+          gameId: `${this.props.match.params.id}`,
+        },
+      });
+      this.setState({ isLoading: false });
+    }
   }
 
   async disconnect() {
@@ -154,69 +169,49 @@ class Game extends React.Component {
           when={true}
           message={this.leaveGame}
         />
-        <div className="Forms">
-          <div className="Chat">
-            <form onSubmit={this.handleSubmit}>
-              <FormGroup controlId="content">
-                <FormControl
-                  value={this.state.text}
-                  componentClass="textarea"
-                  onChange={e => this.setState({text: e.target.value})}
-                />
-              </FormGroup>
-              <LoaderButton
-                block
-                type="submit"
-                bsSize="large"
-                bsStyle="primary"
-                isLoading={this.state.isLoading}
-                disabled={!this.validateMessageForm()}
-              >
-                Send
-              </LoaderButton>
-              <LoaderButton
-                block
-                bsSize="large"
-                bsStyle="danger"
-                onClick={this.sendInfo}
-                isLoading={this.state.isLoading}
-              >
-                Send info
-              </LoaderButton>
-              <LoaderButton
-                block
-                bsSize="large"
-                bsStyle="danger"
-                onClick={this.connectToWebSocket}
-                isLoading={this.state.isLoading}
-              >
-                Connect
-              </LoaderButton>
-            </form>
-            <MessagesContainer messages={this.state.messages}/>
-          </div>
-          
-          <div className="Moves">
-            <form onSubmit={this.sendMove}>
-              <FormGroup controlId="content">
-                <FormControl
-                  value={this.state.move}
-                  componentClass="textarea"
-                  onChange={e => this.setState({move: e.target.value})}
-                />
-              </FormGroup>
-              <LoaderButton
-                block
-                type="submit"
-                bsSize="large"
-                bsStyle="primary"
-                isLoading={this.state.isLoading}
-                disabled={!this.validateMoveForm()}
-              >SendMove
-              </LoaderButton>
-            </form>
-            <div>{this.state.moves}</div>
-          </div>
+        <div className="Chat">
+          <form onSubmit={this.handleSubmit}>
+            <FormGroup controlId="content">
+              <FormControl
+                value={this.state.text}
+                componentClass="textarea"
+                onChange={e => this.setState({text: e.target.value})}
+              />
+            </FormGroup>
+            <LoaderButton
+              block
+              type="submit"
+              bsSize="large"
+              bsStyle="primary"
+              isLoading={this.state.isLoading}
+              disabled={!this.validateMessageForm()}
+            >
+              Send
+            </LoaderButton>
+          </form>
+          <MessagesContainer messages={this.state.messages}/>
+        </div>
+        
+        <div className="Moves">
+          <form onSubmit={this.sendMove}>
+            <FormGroup controlId="content">
+              <FormControl
+                value={this.state.move}
+                componentClass="textarea"
+                onChange={e => this.setState({move: e.target.value})}
+              />
+            </FormGroup>
+            <LoaderButton
+              block
+              type="submit"
+              bsSize="large"
+              bsStyle="primary"
+              isLoading={this.state.isLoading}
+              disabled={!this.validateMoveForm()}
+            >SendMove
+            </LoaderButton>
+          </form>
+          <div>{this.state.moves}</div>
         </div>
       </>
     )
