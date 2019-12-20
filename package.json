@@ -4,8 +4,10 @@
   "private": true,
   "dependencies": {
     "aws-amplify": "^2.2.0",
+    "chess.js": "github:jhlywa/chess.js",
     "react": "^16.12.0",
     "react-bootstrap": "^0.33.0",
+    "react-chess": "^1.1.1",
     "react-dom": "^16.12.0",
     "react-modal": "^3.11.1",
     "react-router-bootstrap": "^0.25.0",

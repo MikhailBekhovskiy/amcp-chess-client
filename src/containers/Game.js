@@ -5,7 +5,34 @@ import "./Game.css";
 import config from "../config";
 import { FormGroup, FormControl } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
-import Chat from "../components/Chat"
+import Chat from "../components/Chat";
+import ChessBoard from "react-chess";
+import ChessGame from "chess.js";
+
+const lineup = ['R@h1', 'P@f2', 'q@d8', 'R@a1', 'P@a2', 'P@c2', 'b@c8', 'p@d7', 'Q@d1', 'n@g8']
+
+// from fen
+//        ...
+// to ['R@h1', 'P@f2', 'q@d8', ...]
+function transformNotation(fenNotation) {
+  var result = [];
+  let figures = fenNotation.split(' ')[0];
+  let lines = figures.split('/');
+  var skipped = 0;
+  lines.forEach((line, i) => {
+    skipped = 0;
+    [...line].forEach((piece, j) => {
+      if (piece >= '0' && piece <= '8') {
+        skipped += parseInt(piece) - 1;
+      }
+      else {
+        const position = String.fromCharCode(j + 97 + skipped) + (8 - i).toString();
+        result.push(piece + '@' + position);
+      }
+    })
+  });
+  return result;
+}
 
 class Game extends React.Component {
   constructor(props) {
@@ -21,6 +48,8 @@ class Game extends React.Component {
         // {author: "Author", text: "Hello world"},
       ],
       socket: null,
+      chess: null,
+      pieces: []
     }
 
     // binding
@@ -33,7 +62,10 @@ class Game extends React.Component {
     this.disconnect = this.disconnect.bind(this);
     this.leaveGame = this.leaveGame.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.submitSend = this.submitSend.bind(this);
     this.sendMove = this.sendMove.bind(this);
+    this.onMovePiece = this.onMovePiece.bind(this);
+
   }
 
   componentDidMount() {
@@ -52,10 +84,23 @@ class Game extends React.Component {
           return {messages: state.messages.concat(data.message)};
         });
         break;
+      case "gameOver":
       case "move":
         this.setState((state, props) => {
           return {moves: state.moves.concat(data.move)};
         });
+        let chessCopy = this.state.chess;
+        chessCopy.move(data.move, {sloppy: true});
+        this.setState({
+          chess: chessCopy,
+          pieces: transformNotation(chessCopy.fen()),
+        })
+        break;
+      case "gameStarted":
+        this.setState({
+          chess: new ChessGame()
+        });
+        break;
       default:
         this.setState((state, props) => {
           return {messages: state.messages.concat("Unknown socket message:", JSON.stringify(data))};
@@ -146,14 +191,29 @@ class Game extends React.Component {
     this.sendMessage();
   }
 
-  sendMove(event) {
+  submitSend(event) {
     event.preventDefault();
+    this.sendMove(this.state.move);
+  }
+
+  sendMove(move) {
     let body = {
       action: "makeMove",
-      move: this.state.move,
+      move: move,
       gameId: `${this.props.match.params.id}`
     }
     this.sendToWebsocket(body);
+  }
+
+  onMovePiece(piece, fromSquare, toSquare) {
+    console.log(fromSquare, toSquare);
+    let chessCopy = this.state.chess;
+    if (chessCopy.move(fromSquare + toSquare, {sloppy: true})) {
+      this.sendMove(fromSquare + toSquare);
+    }
+    this.setState({
+      chess: chessCopy
+    })
   }
 
   render() {
@@ -163,6 +223,15 @@ class Game extends React.Component {
           when={true}
           message={this.leaveGame}
         />
+
+        <div className="BoardWrapper">
+          <ChessBoard pieces={
+            this.state.chess
+            ? transformNotation(this.state.chess.fen())
+            : ChessBoard.getDefaultLineup()
+            }
+            onMovePiece={this.onMovePiece}/>
+        </div>
 
         <div className="Forms">
           <Chat messages={this.state.messages}
@@ -174,7 +243,7 @@ class Game extends React.Component {
           />
           
           <div className="Moves">
-            <form onSubmit={this.sendMove}>
+            <form onSubmit={this.submitSend}>
               <FormGroup controlId="content">
                 <FormControl
                   value={this.state.move}
