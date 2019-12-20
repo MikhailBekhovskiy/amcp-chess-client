@@ -2,3 +2,14 @@
   width: 200px;
   min-height: 200px;
 }
+
+.Game {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+}
+
+.Forms {
+  position: relative;
+  float: right;
+}

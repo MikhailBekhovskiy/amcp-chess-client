@@ -158,41 +158,44 @@ class Game extends React.Component {
 
   render() {
     return (
-      <>
+      <div className="Game">
         <Prompt
           when={true}
           message={this.leaveGame}
         />
-        <Chat messages={this.state.messages}
-              handleSubmit={this.handleSubmit}
-              text={this.state.text}
-              textOnChange={e => this.setState({text: e.target.value})}
-              isLoading={this.state.isLoading}
-              disabled={!this.validateMessageForm()}
-        />
-        
-        <div className="Moves">
-          <form onSubmit={this.sendMove}>
-            <FormGroup controlId="content">
-              <FormControl
-                value={this.state.move}
-                componentClass="textarea"
-                onChange={e => this.setState({move: e.target.value})}
-              />
-            </FormGroup>
-            <LoaderButton
-              block
-              type="submit"
-              bsSize="large"
-              bsStyle="primary"
-              isLoading={this.state.isLoading}
-              disabled={!this.validateMoveForm()}
-            >SendMove
-            </LoaderButton>
-          </form>
-          <div>{this.state.moves}</div>
+
+        <div className="Forms">
+          <Chat messages={this.state.messages}
+                handleSubmit={this.handleSubmit}
+                text={this.state.text}
+                textOnChange={e => this.setState({text: e.target.value})}
+                isLoading={this.state.isLoading}
+                disabled={!this.validateMessageForm()}
+          />
+          
+          <div className="Moves">
+            <form onSubmit={this.sendMove}>
+              <FormGroup controlId="content">
+                <FormControl
+                  value={this.state.move}
+                  componentClass="textarea"
+                  onChange={e => this.setState({move: e.target.value})}
+                />
+              </FormGroup>
+              <LoaderButton
+                block
+                type="submit"
+                bsSize="large"
+                bsStyle="primary"
+                isLoading={this.state.isLoading}
+                disabled={!this.validateMoveForm()}
+              >SendMove
+              </LoaderButton>
+            </form>
+            <div>{this.state.moves}</div>
+          </div>
         </div>
-      </>
+      </div>
     )
   }
 }
