@@ -5,15 +5,7 @@ import "./Game.css";
 import config from "../config";
 import { FormGroup, FormControl } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
-
-function MessagesContainer(props) {
-  return (
-    <div className="MessagesContainer">
-      {props.messages.map((message, i) =>
-        <div className="ChatMessage" key={("message-"+i)}>{message}</div>)}
-    </div>
-  )
-}
+import Chat from "../components/Chat"
 
 class Game extends React.Component {
   constructor(props) {
@@ -25,7 +17,9 @@ class Game extends React.Component {
       text: "",
       move: "",
       moves: [],
-      messages: [],
+      messages: [
+        // {author: "Author", text: "Hello world"},
+      ],
       socket: null,
     }
 
@@ -169,28 +163,13 @@ class Game extends React.Component {
           when={true}
           message={this.leaveGame}
         />
-        <div className="Chat">
-          <form onSubmit={this.handleSubmit}>
-            <FormGroup controlId="content">
-              <FormControl
-                value={this.state.text}
-                componentClass="textarea"
-                onChange={e => this.setState({text: e.target.value})}
-              />
-            </FormGroup>
-            <LoaderButton
-              block
-              type="submit"
-              bsSize="large"
-              bsStyle="primary"
+        <Chat messages={this.state.messages}
+              handleSubmit={this.handleSubmit}
+              text={this.state.text}
+              textOnChange={e => this.setState({text: e.target.value})}
               isLoading={this.state.isLoading}
               disabled={!this.validateMessageForm()}
-            >
-              Send
-            </LoaderButton>
-          </form>
-          <MessagesContainer messages={this.state.messages}/>
-        </div>
+        />
         
         <div className="Moves">
           <form onSubmit={this.sendMove}>
