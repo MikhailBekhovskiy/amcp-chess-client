@@ -15,7 +15,7 @@ function MessagesContainer(props) {
   )
 }
 
-export class Game extends React.Component {
+class Game extends React.Component {
   constructor(props) {
     props.userHasJoinedGame(true);
     super(props);
@@ -222,3 +222,5 @@ export class Game extends React.Component {
     )
   }
 }
+
+export default Game;
