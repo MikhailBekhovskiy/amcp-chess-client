@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { PageHeader, ListGroup, ListGroupItem, Button } from "react-bootstrap";
-import { LinkContainer } from "react-router-bootstrap";
 import { API } from "aws-amplify";
 import Modal from 'react-modal';
-import "./Home.css";
+// import "./Home.css";
 
-export default function Home(props) {
+export default function Profile(props) {
   const [parties, setParties] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -44,22 +43,30 @@ export default function Home(props) {
       <>
         <Button onClick={handleShow}>
           <ListGroupItem  header={party.gameId}>
-          {"Created: " + new Date(party.createdAt).toLocaleString() + '|' +
-          party.user1Id + '|' + party.user2Id + '|' + party.winner}
-        </ListGroupItem>
+            {"Created: " + new Date(party.createdAt).toLocaleString() + '|' +
+            party.user1Id + '|' + party.user2Id + '|' + party.winner}
+          </ListGroupItem>
         </Button>
-        <Modal show={show} onHide={handleClose}>
+        <Modal show={show} onHide={handleClose} animation={false}>
           <Modal.Header closeButton>
-            <Modal.Title>Notation</Modal.Title>
+            <Modal.Title>Modal heading</Modal.Title>
           </Modal.Header>
-          <Modal.Body>{party.notation || ''}</Modal.Body>
+          <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={handleClose}>
+              Save Changes
+            </Button>
+          </Modal.Footer>
         </Modal>
       </>
       )
     }
 
     return [].concat(parties).map((party, i) =>
-      <Party party={party}></Party>
+      <Party party={party} key={party.createdAt}/>
     );
   }
 
