@@ -41,10 +41,10 @@ export default function Home(props) {
     return parseFloat(API.get("chess", "/blackstat").body);
   }
   
-  function updateStatistics(){
-    whiteStat = loadWStat();
+  async function updateStatistics(){
+    const whiteStat = await loadWStat();
     setWhiteStat(whiteStat);
-    blackStat = loadBStat();
+    const blackStat = await loadBStat();
     setBlackStat(blackStat);
   }
 
@@ -96,7 +96,7 @@ export default function Home(props) {
       <div className="Home">
         {props.isAuthenticated ? renderGames() : renderLander()}
       </div>
-      <button onСlick = {updateStatistics()}>Click me for statistics</button>
+      <button onClick = {updateStatistics}>Click me for statistics</button>
       <div>{renderStatistics(whiteStat, blackStat)}</div>
     </>
   );
