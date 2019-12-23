@@ -34,11 +34,11 @@ export default function Home(props) {
   }
 
   function loadWStat(){
-    return API.get("chess", "/whitestat");
+    return parseFloat(API.get("chess", "/whitestat").body);
   }
 
   function loadBStat(){
-    return API.get("chess", "/blackstat");
+    return parseFloat(API.get("chess", "/blackstat").body);
   }
   
   function updateStatistics(){
