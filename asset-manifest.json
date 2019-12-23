@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/amcp-chess-client/static/css/main.866fbf5e.chunk.css",
+    "main.js": "/amcp-chess-client/static/js/main.5f640603.chunk.js",
+    "main.js.map": "/amcp-chess-client/static/js/main.5f640603.chunk.js.map",
+    "runtime-main.js": "/amcp-chess-client/static/js/runtime-main.abc8fe8f.js",
+    "runtime-main.js.map": "/amcp-chess-client/static/js/runtime-main.abc8fe8f.js.map",
+    "static/js/2.e462091c.chunk.js": "/amcp-chess-client/static/js/2.e462091c.chunk.js",
+    "static/js/2.e462091c.chunk.js.map": "/amcp-chess-client/static/js/2.e462091c.chunk.js.map",
+    "index.html": "/amcp-chess-client/index.html",
+    "precache-manifest.ac97dc5c126b2a5982def81ac5908947.js": "/amcp-chess-client/precache-manifest.ac97dc5c126b2a5982def81ac5908947.js",
+    "service-worker.js": "/amcp-chess-client/service-worker.js",
+    "static/css/main.866fbf5e.chunk.css.map": "/amcp-chess-client/static/css/main.866fbf5e.chunk.css.map",
+    "static/js/2.e462091c.chunk.js.LICENSE": "/amcp-chess-client/static/js/2.e462091c.chunk.js.LICENSE"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.abc8fe8f.js",
+    "static/js/2.e462091c.chunk.js",
+    "static/css/main.866fbf5e.chunk.css",
+    "static/js/main.5f640603.chunk.js"
+  ]
+}
