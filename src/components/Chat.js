@@ -45,14 +45,14 @@ export default function Chat(props) {
   function ChatMessage(props) {
     return (
       <div className="ChatMessage">
-        <div className="header">
+        {/* <div className="header">
           <div className="author">
             {props.message.author}  
           </div>
-        </div>
+        </div> */}
         <div className="body">
           <div className="text">
-            {props.message.text}
+            {props.message}
           </div>
         </div>
       </div>
