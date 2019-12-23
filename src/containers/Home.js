@@ -7,6 +7,8 @@ import "./Home.css";
 export default function Home(props) {
   const [games, setGames] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [whiteStat, setWhiteStat] = useState(0.0);
+  const [blackStat, setBlackStat] = useState(0.0);
 
   useEffect(() => {
     async function onLoad() {
@@ -31,6 +33,21 @@ export default function Home(props) {
     return API.get("chess", "/games");
   }
 
+  function loadWStat(){
+    return API.get("chess", "/profile/whitestat");
+  }
+
+  function loadBStat(){
+    return API.get("chess", "/profile/blackstat");
+  }
+  
+  function updateStatistics(){
+    whiteStat = loadWStat();
+    setWhiteStat(whiteStat);
+    blackStat = loadBStat();
+    setBlackStat(blackStat);
+  }
+
   function renderGamesList(games) {
     return [{}].concat(games).map((game, i) =>
       i !== 0 ? (
@@ -51,6 +68,10 @@ export default function Home(props) {
     );
   }
 
+  function renderStatistics(whiteStat, blackStat){
+    return <div>{"Statistics for white: " + whiteStat} <br/>{"Stastistics for black: "+ blackStat}</div>;
+  }
+
   function renderLander() {
     return (
       <div className="lander">
@@ -59,7 +80,6 @@ export default function Home(props) {
       </div>
     );
   }
-
   function renderGames() {
     return (
       <div className="games">
@@ -72,8 +92,12 @@ export default function Home(props) {
   }
 
   return (
-    <div className="Home">
-      {props.isAuthenticated ? renderGames() : renderLander()}
-    </div>
+    <>
+      <div className="Home">
+        {props.isAuthenticated ? renderGames() : renderLander()}
+      </div>
+      <button onClick = "updateStatistics()">Click me for statistics</button>
+      <div>{renderStatistics(whiteStat, blackStat)}</div>
+    </>
   );
 }
