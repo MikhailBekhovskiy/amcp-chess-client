@@ -33,12 +33,14 @@ export default function Home(props) {
     return API.get("chess", "/games");
   }
 
-  function loadWStat(){
-    return parseFloat(API.get("chess", "/whitestat").body);
+  async function loadWStat(){
+    let response = await API.get("chess", "/whitestat");
+    return response;
   }
 
-  function loadBStat(){
-    return parseFloat(API.get("chess", "/blackstat").body);
+  async function loadBStat(){
+    let response = await API.get("chess", "/blackstat");
+    return response;
   }
   
   async function updateStatistics(){
@@ -96,7 +98,7 @@ export default function Home(props) {
       <div className="Home">
         {props.isAuthenticated ? renderGames() : renderLander()}
       </div>
-      <button onClick = {updateStatistics}>Click me for statistics</button>
+      <button onClick={updateStatistics}>Click me for statistics</button>
       <div>{renderStatistics(whiteStat, blackStat)}</div>
     </>
   );
